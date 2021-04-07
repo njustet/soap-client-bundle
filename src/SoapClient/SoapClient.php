@@ -51,28 +51,13 @@ class SoapClient extends \SoapClient implements SoapClientInterface
 
         $options = array_merge($defaults, $options);
 
-        $this->SoapClient($wsdl, $options);
+        parent::__construct($wsdl, $options);
         $this->options = $options;
     }
 
     public function getOptions(): array
     {
         return $this->options;
-    }
-
-    public function __call($function_name, $arguments)
-    {
-        try {
-            $response = parent::__call($function_name, $arguments);
-            //works only with 'exceptions' => false, we always throw
-            if (is_soap_fault($response)) {
-                throw $response;
-            }
-        } catch (\Exception $e) {
-            $this->handleFault($function_name, $arguments, $e);
-        }
-
-        return $response;
     }
 
     public function __soapCall(
